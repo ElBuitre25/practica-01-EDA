@@ -28,11 +28,18 @@ flowchart TD
     MAIN --> T3["Medir AVL\nstd::chrono"]
 
     T1 -. pendiente .-> QS["quick_sort.cpp\nQuick Sort"]
-    T2 -. pendiente .-> HS["heap_sort.cpp\nHeap Sort"]
     T3 -. pendiente .-> AV["avl_inorder.cpp\nAVL Inorder"]
 
+    T2 --> HS_COPY["Copiar dataset\nhttps heap_dataset = dataset"]
+    HS_COPY --> HS_BUILD["build_max_heap\nRecorre nodos no-hoja — O(n)"]
+    HS_BUILD --> HS_HEAPIFY["heapify\nRepara subárbol raíz i — O(log n)"]
+    HS_HEAPIFY --> HS_SORT["heap_sort\nExtrae máximo n veces — O(n log n)"]
+    HS_SORT --> HS_MEM["estimate_memory_mb\nsizeof string × n — O(1) auxiliar"]
+    HS_MEM -. "⚠ BUG-002: declarada void\nen lugar de double — ver BUGS.md" .-> HS_MEM
+    HS_MEM --> HS_OUT["heap_sort.cpp\nImplementado"]
+
     T1 --> RES["Imprimir resultados\ncout: X ms por algoritmo"]
-    T2 --> RES
+    HS_OUT --> RES
     T3 --> RES
 
     RES --> Z((Fin))
