@@ -2,6 +2,7 @@
 #include <vector>
 #include <chrono>
 #include "dataset/create_random_dataset.h"
+#include "heap_sort.h"
 
 int main()
 {   
@@ -15,6 +16,7 @@ int main()
     auto tiempo_quick = std::chrono::duration_cast<std::chrono::milliseconds>(fin_quick - inicio_quick).count();
 
     // HeapSort
+    std::vector<std::string> heap_dataset = dataset;
     auto inicio_heap = std::chrono::high_resolution_clock::now();
     // heapSort(dataset);
     auto fin_heap = std::chrono::high_resolution_clock::now();
@@ -29,6 +31,7 @@ int main()
     // Resultados
     std::cout << "QuickSort : " << tiempo_quick << " ms" << std::endl;
     std::cout << "HeapSort  : " << tiempo_heap  << " ms" << std::endl;
+    std::cout << "HeapSort  : " << estimate_memory_mb(heap_dataset) << " MB estimados" << std::endl;
     std::cout << "AVL       : " << tiempo_avl   << " ms" << std::endl;
 
 
