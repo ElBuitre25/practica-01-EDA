@@ -57,3 +57,35 @@ Tras cada `getline`, eliminar `\x00` y `\r` del string. Funciona pero es frágil
 ### Recomendación
 Opción A: convertir `words_alpha.txt` a UTF-8 antes de commitear el archivo
 corregido. No requiere cambios en el código C++.
+
+## BUG-002: estimate_memory_mb declarada como void en heap_sort.h
+
+### Síntoma
+El compilador lanza dos errores en cadena:
+- `cannot overload functions distinguished by return type alone` en heap_sort.cpp
+- `no operator "<<" matches these operands` en main.cpp 
+
+### Causa raíz
+En `src/heap_sort.h`, la función `estimate_memory_mb` fue declarada
+con tipo de retorno `void` en lugar de `double`:
+```cpp
+// Declaración incorrecta
+void estimate_memory_mb(const std::vector<std::string>& arr);
+```
+
+Esto genera un conflicto porque en `heap_sort.cpp` la definición
+retorna `double`, y en `main.cpp` el resultado se pasa al operador `<<`
+que no acepta `void`.
+
+### Archivo afectado
+`src/heap_sort.h` — declaración de `estimate_memory_mb()`
+
+### Solución aplicada
+Corregir el tipo de retorno en la declaración del header:
+```cpp
+// Declaración correcta
+double estimate_memory_mb(const std::vector<std::string>& arr);
+```
+
+### Estado
+Corregido ✓
