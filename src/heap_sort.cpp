@@ -24,7 +24,16 @@ void build_max_heap(std::vector<std::string>& arr) {
         heapify(arr, total_size, current_index);
 }
 
-void heap_sort(std::vector<std::string>& arr) {}
+void heap_sort(std::vector<std::string>& arr) {
+    int arr_size = static_cast<int>(arr.size());
+
+    build_max_heap(arr);
+
+    for (int sorted_boundary = arr_size - 1; sorted_boundary > 0; sorted_boundary--) {
+        std::swap(arr[0], arr[sorted_boundary]);
+        heapify(arr, sorted_boundary, 0);
+    }
+}
 
 double estimate_memory_mb(const std::vector<std::string>& arr) {
     return 0.0; 
