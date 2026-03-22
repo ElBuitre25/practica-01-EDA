@@ -36,5 +36,8 @@ void heap_sort(std::vector<std::string>& arr) {
 }
 
 double estimate_memory_mb(const std::vector<std::string>& arr) {
-    return 0.0; 
+    size_t total_bytes = 0;
+    for (const auto& word : arr) 
+        total_bytes += sizeof(std::string) + word.capacity();   
+    return static_cast<double>(total_bytes) / (1024.0 * 1024.0);
 }
