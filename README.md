@@ -91,9 +91,9 @@ n veces con `heap_sort()` en O(n log n). Incluye `estimate_memory_mb()` para
 estimar el consumo de memoria. Ordenamiento in-place.
 
 ### `red_black_tree`
-Árbol Rojo-Negro con inserción balanceada. Se insertan las 100,000 palabras
-y el recorrido inorder produce el resultado ordenado. Cada nodo almacena la clave,
-el color y tres punteros (padre, izquierdo, derecho).
+Árbol Rojo-Negro con inserción balanceada. Se insertan las 100,000 palabras en 
+el árbol y, posteriormente, el recorrido inorder devuelve las claves en orden lexicográfico. 
+Cada nodo almacena la clave, el color y tres punteros: padre, hijo izquierdo e hijo derecho.
 
 ---
 
