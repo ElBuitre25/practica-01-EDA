@@ -1,6 +1,6 @@
 # Práctica 1 — Estructuras de Datos (ST0245)
 
-Comparación de tiempos de ejecución entre algoritmos de ordenamiento: **QuickSort**, **HeapSort** y **AVL Tree**, sobre un dataset de 100,000 palabras aleatorias en inglés.
+Comparación de tiempos de ejecución entre algoritmos de ordenamiento: **QuickSort**, **HeapSort** y **Red-Black Tree**, sobre un dataset de 100,000 palabras aleatorias en inglés.
 
 ---
 
@@ -9,17 +9,23 @@ Comparación de tiempos de ejecución entre algoritmos de ordenamiento: **QuickS
 ```
 practica1_EDA/
 ├── data/
-│   ├── words_alpha.txt       # Fuente: ~100k palabras en inglés
+│   ├── words_alpha.txt       # Fuente: 100k palabras en inglés (UTF-8)
 │   └── dataset.txt           # Generado en runtime (no versionado)
 ├── src/
-│   ├── main.cpp              # Orquestador: genera dataset y mide tiempos
-│   ├── heap_sort.h           # Interfaz del módulo HeapSort
-│   ├── heap_sort.cpp         # Implementación HeapSort — O(n log n)
+│   ├── main.cpp              # Orquestador: genera dataset, mide tiempos y compara
+│   ├── quick_sort.h
+│   ├── quick_sort.cpp        # QuickSort con pivote mediana de tres — O(n log n)
+│   ├── heap_sort.h
+│   ├── heap_sort.cpp         # HeapSort con Max-Heap — O(n log n)
+│   ├── red_black_tree.h
+│   ├── red_black_tree.cpp    # Red-Black Tree, inorder traversal — O(n log n)
 │   └── dataset/
 │       ├── create_random_dataset.h
 │       └── create_random_dataset.cpp
 ├── build/                    # Binarios compilados (no versionado)
-├── BUGS.md                   # Bugs conocidos pendientes de solución
+├── docs/
+│   └── flowchart.md
+├── BUGS.md
 └── README.md
 ```
 
@@ -30,7 +36,13 @@ practica1_EDA/
 Requiere C++17 y g++. Ejecutar desde la raíz del proyecto:
 
 ```bash
-g++ -std=c++17 src/main.cpp src/dataset/create_random_dataset.cpp src/heap_sort.cpp -o build/proyecto
+g++ -std=c++17 -O2 \
+  src/main.cpp \
+  src/quick_sort.cpp \
+  src/heap_sort.cpp \
+  src/red_black_tree.cpp \
+  src/dataset/create_random_dataset.cpp \
+  -o build/proyecto
 ```
 
 ## Ejecución
@@ -39,11 +51,22 @@ g++ -std=c++17 src/main.cpp src/dataset/create_random_dataset.cpp src/heap_sort.
 ./build/proyecto
 ```
 
-Salida esperada:
+Salida esperada (los tiempos varían por ejecución):
 ```
-QuickSort : X ms
-HeapSort  : X ms
-AVL       : X ms
+--- Tiempos de ejecucion ---
+QuickSort:      57 ms
+HeapSort:       106 ms
+Red-Black Tree: 80 ms
+
+--- Memoria estimada ---
+QuickSort:      4.48 MB
+HeapSort:       4.48 MB
+Red-Black Tree: 7.53 MB
+
+--- Verificacion (primeras 10 palabras) ---
+QuickSort: a aahing aaliis aaronite ...
+HeapSort:  a aahing aaliis aaronite ...
+RBT:       a aahing aaliis aaronite ...
 ```
 
 El archivo `data/dataset.txt` se genera automáticamente con las 100,000 palabras seleccionadas.
@@ -57,37 +80,39 @@ Lee `data/words_alpha.txt`, baraja todas las palabras usando Fisher-Yates
 (`std::shuffle` + `std::mt19937_64` + `std::seed_seq` de 256 bits de entropía),
 selecciona las primeras 100,000 y las escribe en `data/dataset.txt`.
 
-### `main.cpp`
-Llama al generador de dataset y mide con `std::chrono::high_resolution_clock`
-el tiempo de cada algoritmo de ordenamiento. Los algoritmos están pendientes
-de implementación.
+### `quick_sort`
+QuickSort recursivo sobre `std::vector<std::string>`. Usa mediana de tres elementos
+(primero, medio, último) como pivote para evitar el peor caso O(n²) con datos
+casi ordenados. Ordenamiento in-place.
 
 ### `heap_sort`
-Implementa el algoritmo HeapSort sobre `std::vector<std::string>`.
-Construye un Max-Heap con `build_max_heap()` en O(n), luego extrae
-el máximo n veces con `heap_sort()` en O(n log n). Incluye
-`estimate_memory_mb()` para estimar el consumo de memoria en MB.
-No utiliza estructuras auxiliares — ordenamiento in-place O(1) espacial.
+Construye un Max-Heap con `build_max_heap()` en O(n), luego extrae el máximo
+n veces con `heap_sort()` en O(n log n). Incluye `estimate_memory_mb()` para
+estimar el consumo de memoria. Ordenamiento in-place.
+
+### `red_black_tree`
+Árbol Rojo-Negro con inserción balanceada. Se insertan las 100,000 palabras
+y el recorrido inorder produce el resultado ordenado. Cada nodo almacena la clave,
+el color y tres punteros (padre, izquierdo, derecho).
 
 ---
 
-## Estado actual
+## Estado
 
-| Módulo                | Estado          |
-|-----------------------|-----------------|
-| Generador de dataset  | Implementado    |
-| Orquestador / medición| Implementado    |
-| QuickSort             | Pendiente       |
-| HeapSort              | Implementado    |
-| AVL Tree              | Pendiente       |
+| Módulo                | Estado       |
+|-----------------------|--------------|
+| Generador de dataset  | Implementado |
+| QuickSort             | Implementado |
+| HeapSort              | Implementado |
+| Red-Black Tree        | Implementado |
+| Medición de tiempos   | Implementado |
+| Estimación de memoria | Implementado |
 
 ---
 
-## Bugs conocidos
+## Bugs
 
-Ver [`BUGS.md`](BUGS.md) para el detalle completo.
-
-| ID      | Descripción                                              | Estado   |
-|---------|----------------------------------------------------------|----------|
-| BUG-001 | `words_alpha.txt` en UTF-16 LE causa lectura corrupta    | Abierto  |
-| BUG-002 | `estimate_memory_mb` declarada `void` en `heap_sort.h`   | Cerrado  |
+| ID      | Descripción                                           | Estado  |
+|---------|-------------------------------------------------------|---------|
+| BUG-001 | `words_alpha.txt` en UTF-16 LE causa lectura corrupta | Cerrado |
+| BUG-002 | `estimate_memory_mb` declarada `void` en heap_sort.h  | Cerrado |
